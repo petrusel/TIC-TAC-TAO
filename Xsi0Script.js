@@ -1,46 +1,55 @@
+function winner(arr) {  
+  if (arr[0] != '') {
+    for (let i = 0; i < arr.length; ++i) {
+      if (arr[i] !== arr[0]) { 
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
+}
+
 let index = 0;
+let haveWinner = 0;
 function addItem(id) {
-  if (index % 2 == 0) {
+  if (index % 2 == 0 && haveWinner == 0) {
     document.getElementById("" + id).innerHTML = 'X';
-  } else {
+  } else if (haveWinner == 0) {
     document.getElementById("" + id).innerHTML = 'O';
   }
   ++index;
   const table = document.getElementsByTagName('table')[0];
-  if (
-    // X
-    // lines
-    (table.rows[0].cells[0].innerHTML == "X" && table.rows[0].cells[1].innerHTML == "X" && table.rows[0].cells[2].innerHTML == "X") ||
-    (table.rows[1].cells[0].innerHTML == "X" && table.rows[1].cells[1].innerHTML == "X" && table.rows[1].cells[2].innerHTML == "X") ||
-    (table.rows[2].cells[0].innerHTML == "X" && table.rows[2].cells[1].innerHTML == "X" && table.rows[2].cells[2].innerHTML == "X") ||
-    // columns
-    (table.rows[0].cells[0].innerHTML == "X" && table.rows[1].cells[0].innerHTML == "X" && table.rows[2].cells[0].innerHTML == "X") ||
-    (table.rows[0].cells[1].innerHTML == "X" && table.rows[1].cells[1].innerHTML == "X" && table.rows[2].cells[1].innerHTML == "X") ||
-    (table.rows[0].cells[2].innerHTML == "X" && table.rows[1].cells[2].innerHTML == "X" && table.rows[2].cells[2].innerHTML == "X") ||
-    // main diagonal
-    (table.rows[0].cells[0].innerHTML == "X" && table.rows[1].cells[1].innerHTML == "X" && table.rows[2].cells[2].innerHTML == "X") ||
-    // secondary diagonal
-    (table.rows[2].cells[0].innerHTML == "X" && table.rows[1].cells[1].innerHTML == "X" && table.rows[0].cells[2].innerHTML == "X")
-    ) {
-    document.getElementById("id_status").innerHTML = `<h3 style="color:red">CASTIGATOR X</h3>`;
-  } else if (
-    // O
-    // lines
-    (table.rows[0].cells[0].innerHTML == "O" && table.rows[0].cells[1].innerHTML == "O" && table.rows[0].cells[2].innerHTML == "O") ||
-    (table.rows[1].cells[0].innerHTML == "O" && table.rows[1].cells[1].innerHTML == "O" && table.rows[1].cells[2].innerHTML == "O") || 
-    (table.rows[2].cells[0].innerHTML == "O" && table.rows[2].cells[1].innerHTML == "O" && table.rows[2].cells[2].innerHTML == "O") ||
-    // columns
-    (table.rows[0].cells[0].innerHTML == "O" && table.rows[1].cells[0].innerHTML == "O" && table.rows[2].cells[0].innerHTML == "O") ||
-    (table.rows[0].cells[1].innerHTML == "O" && table.rows[1].cells[1].innerHTML == "O" && table.rows[2].cells[1].innerHTML == "O") ||
-    (table.rows[0].cells[2].innerHTML == "O" && table.rows[1].cells[2].innerHTML == "O" && table.rows[2].cells[2].innerHTML == "O") ||
-    // main diagonal
-    (table.rows[0].cells[0].innerHTML == "O" && table.rows[1].cells[1].innerHTML == "O" && table.rows[2].cells[2].innerHTML == "O") ||
-    // secondary diagonal
-    (table.rows[2].cells[0].innerHTML == "O" && table.rows[1].cells[1].innerHTML == "O" && table.rows[0].cells[2].innerHTML == "O")
-    ) {
-    document.getElementById("id_status").innerHTML = `<h3 style="color:blue">CASTIGATOR O</h3>`;
-  } else if (index == 9) {
-    document.getElementById("id_status").innerHTML = `<h3 style="color:green">~ REMIZA ~</h3>`;
+  let arrTable = [];
+  let arrLine = [];
+  let arrCol = [];
+  let mainDiag = [];
+  let secDiag = [];
+  for (let i = 0; i < table.rows.length; ++i) {
+    for (let j = 0; j < table.rows.length; ++j) {
+      arrLine[j] = table.rows[i].cells[j].innerHTML;
+      arrCol[j] = table.rows[j].cells[i].innerHTML;
+      if (i == j) {
+        mainDiag[j] = table.rows[i].cells[j].innerHTML;
+      }
+      if (i + j == table.rows.length - 1) {
+        secDiag[j] = table.rows[i].cells[j].innerHTML;
+      }
+    }
+    arrTable.push(new Array(...arrLine));
+    arrTable.push(new Array(...arrCol));
+  }
+  arrTable.push(new Array(...mainDiag));
+  arrTable.push(new Array(...secDiag));
+  for (let i = 0; i < arrTable.length; ++i) {
+    if (winner(arrTable[i])) {
+      haveWinner = 1;
+      document.getElementById("id_status").innerHTML = `<b style="color:red">CASTIGATOR "` + arrTable[i][0] + `"</b>`;
+      return;
+    } else if (index == 9 && haveWinner == 0) {
+      document.getElementById("id_status").innerHTML = `<b style="color:green"> ~ REMIZA ~</b>`;
+      return;
+    }
   }
 }
 
